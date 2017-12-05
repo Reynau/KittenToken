@@ -2,7 +2,9 @@ pragma solidity ^0.4.0;
 
 
 contract Owned {
-    function Owned(){
+    address public owner;
+
+    function Owned() public {
         owner = msg.sender;
     }
 
@@ -11,7 +13,7 @@ contract Owned {
         _;
     }
 
-    function transferOwnership(address newOwner) onlyOwner {
+    function transferOwnership(address newOwner) public onlyOwner {
         owner = newOwner;
     }
 }
