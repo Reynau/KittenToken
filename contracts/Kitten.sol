@@ -1,25 +1,24 @@
 pragma solidity ^0.4.0;
 
 import './ERC20.sol';
+import './Owned.sol';
 
-contract Kitten is ERC20 {
-
-    // Owner of this contract
-    address public owner;
+contract Kitten is ERC20, Owned {
+    uint256 totalSupply;
 
     mapping(address => uint256) balances;
     mapping(address => mapping(address => uint256)) allowed;
 
     function Kitten(uint256 initialSupply) public {
-        owner = msg.sender;
         balances[owner] = initialSupply;
+        totalSupply = initialSupply;
     }
 
     function _transfer(address _from, address _to, uint256 _amount) internal returns (bool success){
         if (_to != 0x0
-        && _amount > 0
-        && balances[_from] >= _amount
-        && balances[_to] + _amount > balances[_to]) {
+            && _amount > 0
+            && balances[_from] >= _amount
+            && balances[_to] + _amount > balances[_to]) {
 
             uint256 previousBalance = balances[_from] + balances[_to];
 
@@ -59,5 +58,20 @@ contract Kitten is ERC20 {
 
     function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function mintTokens(address _minter, uint256 _amount) public onlyOwner returns (bool success) {
+        if (_minter != 0x0
+            && _amount > 0
+            && balances[_minter] + _amount > balances[_minter]) {
+
+            balances[_minter] += _amount;
+            totalSupply += _amount;
+            Transfer(0, owner, _amount);
+            Transfer(owner, _minter, _amount);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
