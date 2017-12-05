@@ -10,9 +10,9 @@ contract Kitten is ERC20 {
     mapping(address => uint256) balances;
     mapping(address => mapping(address => uint256)) allowed;
 
-    function Kitten() public {
+    function Kitten(uint256 initialSupply) public {
         owner = msg.sender;
-        balances[owner] = 100;
+        balances[owner] = initialSupply;
     }
 
     function _transfer(address _from, address _to, uint256 _amount) internal returns (bool success){
